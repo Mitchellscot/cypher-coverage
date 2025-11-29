@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>EncryptionMachineTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">EncryptionMachineTest (Nov 29, 2025 5:29:29 PM)</a> &gt; <a href="../../index.html" class="el_group">code-coverage</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">EncryptionMachineTest.java</span></div><h1>EncryptionMachineTest.java</h1><pre class="source lang-java linenums">
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+<span class="fc" id="L5">public class EncryptionMachineTest {</span>
+
+    // ============================================
+    // Test Group 1: Standard and Boundary Encryption
+    // ============================================
+
+    /**
+     * BBT-1.1: Standard flow - basic encryption with shift of 3
+     */
+    @Test
+    public void testBBT_1_1_StandardFlow() throws Exception {
+        // Key: csci -&gt; fvfl
+<span class="fc" id="L17">        assertEquals(&quot;fvfl&quot;, EncryptionMachine.encryptWord(&quot;csci&quot;));</span>
+        // Words: hello -&gt; khoor, world -&gt; zruog
+<span class="fc" id="L19">        assertEquals(&quot;khoor&quot;, EncryptionMachine.encryptWord(&quot;hello&quot;));</span>
+<span class="fc" id="L20">        assertEquals(&quot;zruog&quot;, EncryptionMachine.encryptWord(&quot;world&quot;));</span>
+<span class="fc" id="L21">    }</span>
+
+    /**
+     * BBT-1.2: Full Alphabet Wrap-Around - tests x-&gt;a, y-&gt;b, z-&gt;c wrap logic
+     */
+    @Test
+    public void testBBT_1_2_FullAlphabetWrapAround() throws Exception {
+        // Key: xyz -&gt; abc
+<span class="fc" id="L29">        assertEquals(&quot;abc&quot;, EncryptionMachine.encryptWord(&quot;xyz&quot;));</span>
+        // Word: zebra -&gt; cheud
+<span class="fc" id="L31">        assertEquals(&quot;cheud&quot;, EncryptionMachine.encryptWord(&quot;zebra&quot;));</span>
+        // Verify individual wrap-around letters
+<span class="fc" id="L33">        assertEquals('a', EncryptionMachine.encryptLetter('x'));</span>
+<span class="fc" id="L34">        assertEquals('b', EncryptionMachine.encryptLetter('y'));</span>
+<span class="fc" id="L35">        assertEquals('c', EncryptionMachine.encryptLetter('z'));</span>
+<span class="fc" id="L36">    }</span>
+
+    /**
+     * BBT-1.3: Start of Alphabet - encryption for characters at start (no wrap)
+     */
+    @Test
+    public void testBBT_1_3_StartOfAlphabet() throws Exception {
+        // Key: abc -&gt; def
+<span class="fc" id="L44">        assertEquals(&quot;def&quot;, EncryptionMachine.encryptWord(&quot;abc&quot;));</span>
+        // Word: apple -&gt; dssoh
+<span class="fc" id="L46">        assertEquals(&quot;dssoh&quot;, EncryptionMachine.encryptWord(&quot;apple&quot;));</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * BBT-1.4: Middle of Alphabet - basic functionality for non-boundary characters
+     */
+    @Test
+    public void testBBT_1_4_MiddleOfAlphabet() throws Exception {
+        // Key: mid -&gt; plg
+<span class="fc" id="L55">        assertEquals(&quot;plg&quot;, EncryptionMachine.encryptWord(&quot;mid&quot;));</span>
+        // Word: program -&gt; surjudp
+<span class="fc" id="L57">        assertEquals(&quot;surjudp&quot;, EncryptionMachine.encryptWord(&quot;program&quot;));</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * BBT-1.5: Single Character Input - minimum valid length (1 character)
+     */
+    @Test
+    public void testBBT_1_5_SingleCharacterInput() throws Exception {
+        // Key: a -&gt; d
+<span class="fc" id="L66">        assertEquals(&quot;d&quot;, EncryptionMachine.encryptWord(&quot;a&quot;));</span>
+        // Word: z -&gt; c
+<span class="fc" id="L68">        assertEquals(&quot;c&quot;, EncryptionMachine.encryptWord(&quot;z&quot;));</span>
+<span class="fc" id="L69">    }</span>
+
+    /**
+     * BBT-1.6: Long Input - handling of very long strings
+     */
+    @Test
+    public void testBBT_1_6_LongInput() throws Exception {
+        // Key: antidisestablishmentarianism -&gt; dqwlglvhvwdeolvkphqwduldqlvp
+<span class="fc" id="L77">        assertEquals(&quot;dqwlglvhvwdeolvkphqwduldqlvp&quot;,</span>
+<span class="fc" id="L78">                EncryptionMachine.encryptWord(&quot;antidisestablishmentarianism&quot;));</span>
+        // Word: pneumonoultramicroscopicsilicovolcanoconiosis -&gt;
+        // sqhxprqrxowudplfurvfrslfvlolfryrofdqrfrqlrvlv
+<span class="fc" id="L81">        assertEquals(&quot;sqhxprqrxowudplfurvfrslfvlolfryrofdqrfrqlrvlv&quot;,</span>
+<span class="fc" id="L82">                EncryptionMachine.encryptWord(&quot;pneumonoultramicroscopicsilicovolcanoconiosis&quot;));</span>
+<span class="fc" id="L83">    }</span>
+
+    // ============================================
+    // Test Group 2: User Input Flow and Constraints
+    // ============================================
+
+    /**
+     * BBT-2.1: Zero Words - program handles word count of 0
+     * Note: This test only validates the key encryption, as the flow logic
+     * is in the main method which is not directly unit testable
+     */
+    @Test
+    public void testBBT_2_1_ZeroWords() throws Exception {
+        // Key: test -&gt; whvw
+<span class="fc" id="L97">        assertEquals(&quot;whvw&quot;, EncryptionMachine.encryptWord(&quot;test&quot;));</span>
+<span class="fc" id="L98">    }</span>
+
+    /**
+     * BBT-2.2: Large Number of Words - verifies multiple word encryption
+     */
+    @Test
+    public void testBBT_2_2_LargeNumberOfWords() throws Exception {
+        // Key: hi -&gt; kl
+<span class="fc" id="L106">        assertEquals(&quot;kl&quot;, EncryptionMachine.encryptWord(&quot;hi&quot;));</span>
+        // Words: one, two, three, four, five
+<span class="fc" id="L108">        assertEquals(&quot;rqh&quot;, EncryptionMachine.encryptWord(&quot;one&quot;));</span>
+<span class="fc" id="L109">        assertEquals(&quot;wzr&quot;, EncryptionMachine.encryptWord(&quot;two&quot;));</span>
+<span class="fc" id="L110">        assertEquals(&quot;wkuhh&quot;, EncryptionMachine.encryptWord(&quot;three&quot;));</span>
+<span class="fc" id="L111">        assertEquals(&quot;irxu&quot;, EncryptionMachine.encryptWord(&quot;four&quot;));</span>
+<span class="fc" id="L112">        assertEquals(&quot;ilyh&quot;, EncryptionMachine.encryptWord(&quot;five&quot;));</span>
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * BBT-2.3: Prompting and Output - verifies encryption logic for key and word
+     * Note: Actual prompt verification would require integration testing
+     */
+    @Test
+    public void testBBT_2_3_PromptingAndOutput() throws Exception {
+        // Key: key -&gt; nhb
+<span class="fc" id="L122">        assertEquals(&quot;nhb&quot;, EncryptionMachine.encryptWord(&quot;key&quot;));</span>
+        // Word: word -&gt; zrug
+<span class="fc" id="L124">        assertEquals(&quot;zrug&quot;, EncryptionMachine.encryptWord(&quot;word&quot;));</span>
+<span class="fc" id="L125">    }</span>
+
+    // ============================================
+    // Additional Test Cases for Branch Coverage
+    // ============================================
+
+    /**
+     * Test invalid character - should throw IllegalArgumentException
+     * This tests the branch in encryptLetter where charIndex == -1
+     */
+    @Test
+    public void testInvalidCharacterUppercase() {
+<span class="fc" id="L137">        Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L138">            EncryptionMachine.encryptLetter('A');</span>
+<span class="nc" id="L139">        });</span>
+<span class="fc" id="L140">        assertEquals(&quot;Only standard English alphabet letters a-z are allowed&quot;, exception.getMessage());</span>
+<span class="fc" id="L141">    }</span>
+
+    /**
+     * Test invalid character with number - should throw IllegalArgumentException
+     */
+    @Test
+    public void testInvalidCharacterNumber() {
+<span class="fc" id="L148">        Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L149">            EncryptionMachine.encryptLetter('5');</span>
+<span class="nc" id="L150">        });</span>
+<span class="fc" id="L151">        assertEquals(&quot;Only standard English alphabet letters a-z are allowed&quot;, exception.getMessage());</span>
+<span class="fc" id="L152">    }</span>
+
+    /**
+     * Test invalid character with special character - should throw
+     * IllegalArgumentException
+     */
+    @Test
+    public void testInvalidCharacterSpecial() {
+<span class="fc" id="L160">        Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L161">            EncryptionMachine.encryptLetter('!');</span>
+<span class="nc" id="L162">        });</span>
+<span class="fc" id="L163">        assertEquals(&quot;Only standard English alphabet letters a-z are allowed&quot;, exception.getMessage());</span>
+<span class="fc" id="L164">    }</span>
+
+    /**
+     * Test invalid word with uppercase letters - should throw
+     * IllegalArgumentException
+     */
+    @Test
+    public void testInvalidWordUppercase() {
+<span class="fc" id="L172">        Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L173">            EncryptionMachine.encryptWord(&quot;Hello&quot;);</span>
+<span class="nc" id="L174">        });</span>
+<span class="fc" id="L175">        assertEquals(&quot;Only standard English alphabet letters a-z are allowed&quot;, exception.getMessage());</span>
+<span class="fc" id="L176">    }</span>
+
+    /**
+     * Test invalid word with numbers - should throw IllegalArgumentException
+     */
+    @Test
+    public void testInvalidWordWithNumbers() {
+<span class="fc" id="L183">        Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L184">            EncryptionMachine.encryptWord(&quot;test123&quot;);</span>
+<span class="nc" id="L185">        });</span>
+<span class="fc" id="L186">        assertEquals(&quot;Only standard English alphabet letters a-z are allowed&quot;, exception.getMessage());</span>
+<span class="fc" id="L187">    }</span>
+
+    /**
+     * Test invalid word with spaces - should throw IllegalArgumentException
+     */
+    @Test
+    public void testInvalidWordWithSpaces() {
+<span class="fc" id="L194">        Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L195">            EncryptionMachine.encryptWord(&quot;hello world&quot;);</span>
+<span class="nc" id="L196">        });</span>
+<span class="fc" id="L197">        assertEquals(&quot;Only standard English alphabet letters a-z are allowed&quot;, exception.getMessage());</span>
+<span class="fc" id="L198">    }</span>
+
+    /**
+     * Test empty string - should return empty string (loop never executes)
+     */
+    @Test
+    public void testEmptyString() throws Exception {
+<span class="fc" id="L205">        assertEquals(&quot;&quot;, EncryptionMachine.encryptWord(&quot;&quot;));</span>
+<span class="fc" id="L206">    }</span>
+
+    // ============================================
+    // Test Group 4: Console I/O Method Coverage
+    // ============================================
+    // Note: These tests require changing private methods to package-private
+    // (removing 'private' keyword) to allow testing
+
+    /**
+     * Test outputStartMessage - verifies the method executes without error
+     */
+    @Test
+    public void testOutputStartMessage() {
+        // Redirect System.out to capture output
+<span class="fc" id="L220">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L221">        java.io.PrintStream originalOut = System.out;</span>
+<span class="fc" id="L222">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L225">            EncryptionMachine.outputStartMessage();</span>
+
+<span class="fc" id="L227">            String output = outContent.toString();</span>
+<span class="fc" id="L228">            assertTrue(output.contains(&quot;Welcome to the CSCI717 Encryption Machine Construction&quot;));</span>
+<span class="fc" id="L229">            assertTrue(output.contains(&quot;The program lets you encrypt a message&quot;));</span>
+<span class="fc" id="L230">        } finally {</span>
+<span class="fc" id="L231">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L233">    }</span>
+
+    /**
+     * Test outputEndMessage - verifies the method executes without error
+     */
+    @Test
+    public void testOutputEndMessage() {
+        // Redirect System.out to capture output
+<span class="fc" id="L241">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L242">        java.io.PrintStream originalOut = System.out;</span>
+<span class="fc" id="L243">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L246">            EncryptionMachine.outputEndMessage();</span>
+
+<span class="fc" id="L248">            String output = outContent.toString();</span>
+<span class="fc" id="L249">            assertTrue(output.contains(&quot;Message fully encrypted&quot;));</span>
+<span class="fc" id="L250">        } finally {</span>
+<span class="fc" id="L251">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L253">    }</span>
+
+    /**
+     * Test outputEncryptedWord - verifies the method outputs correctly
+     */
+    @Test
+    public void testOutputEncryptedWord() {
+        // Redirect System.out to capture output
+<span class="fc" id="L261">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+<span class="fc" id="L262">        java.io.PrintStream originalOut = System.out;</span>
+<span class="fc" id="L263">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L266">            EncryptionMachine.outputEncryptedWord(&quot;hello&quot;, &quot;khoor&quot;);</span>
+
+<span class="fc" id="L268">            String output = outContent.toString();</span>
+<span class="fc" id="L269">            assertTrue(output.contains(&quot;\&quot;hello\&quot;&quot;));</span>
+<span class="fc" id="L270">            assertTrue(output.contains(&quot;has been encrypted to:&quot;));</span>
+<span class="fc" id="L271">            assertTrue(output.contains(&quot;\&quot;khoor\&quot;&quot;));</span>
+<span class="fc" id="L272">        } finally {</span>
+<span class="fc" id="L273">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L275">    }</span>
+
+    /**
+     * Test encryptKey - verifies the method reads input and encrypts correctly
+     */
+    @Test
+    public void testEncryptKey() throws Exception {
+        // Setup input and output streams
+<span class="fc" id="L283">        String input = &quot;test\n&quot;;</span>
+<span class="fc" id="L284">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L285">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L287">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L288">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L290">        System.setIn(inContent);</span>
+<span class="fc" id="L291">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L294">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+<span class="fc" id="L295">            EncryptionMachine.encryptKey(scanner);</span>
+
+<span class="fc" id="L297">            String output = outContent.toString();</span>
+<span class="fc" id="L298">            assertTrue(output.contains(&quot;Enter a key:&quot;));</span>
+<span class="fc" id="L299">            assertTrue(output.contains(&quot;\&quot;test\&quot;&quot;));</span>
+<span class="fc" id="L300">            assertTrue(output.contains(&quot;\&quot;whvw\&quot;&quot;));</span>
+<span class="fc" id="L301">        } finally {</span>
+<span class="fc" id="L302">            System.setIn(originalIn);</span>
+<span class="fc" id="L303">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L305">    }</span>
+
+    // ============================================
+    // Test Group 5: wordEncryptionLoop Coverage
+    // ============================================
+
+    /**
+     * Test wordEncryptionLoop with valid input - positive word count
+     */
+    @Test
+    public void testWordEncryptionLoopValidInput() throws Exception {
+        // Setup: 2 words
+<span class="fc" id="L317">        String input = &quot;2\nhello\nworld\n&quot;;</span>
+<span class="fc" id="L318">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L319">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L321">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L322">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L324">        System.setIn(inContent);</span>
+<span class="fc" id="L325">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L328">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+<span class="fc" id="L329">            EncryptionMachine.wordEncryptionLoop(scanner);</span>
+
+<span class="fc" id="L331">            String output = outContent.toString();</span>
+<span class="fc" id="L332">            assertTrue(output.contains(&quot;How many words in your message?:&quot;));</span>
+<span class="fc" id="L333">            assertTrue(output.contains(&quot;Next word:&quot;));</span>
+<span class="fc" id="L334">            assertTrue(output.contains(&quot;\&quot;hello\&quot;&quot;));</span>
+<span class="fc" id="L335">            assertTrue(output.contains(&quot;\&quot;khoor\&quot;&quot;));</span>
+<span class="fc" id="L336">            assertTrue(output.contains(&quot;\&quot;world\&quot;&quot;));</span>
+<span class="fc" id="L337">            assertTrue(output.contains(&quot;\&quot;zruog\&quot;&quot;));</span>
+<span class="fc" id="L338">        } finally {</span>
+<span class="fc" id="L339">            System.setIn(originalIn);</span>
+<span class="fc" id="L340">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L342">    }</span>
+
+    /**
+     * Test wordEncryptionLoop with zero words
+     */
+    @Test
+    public void testWordEncryptionLoopZeroWords() throws Exception {
+<span class="fc" id="L349">        String input = &quot;0\n&quot;;</span>
+<span class="fc" id="L350">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L351">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L353">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L354">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L356">        System.setIn(inContent);</span>
+<span class="fc" id="L357">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L360">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+<span class="fc" id="L361">            EncryptionMachine.wordEncryptionLoop(scanner);</span>
+
+<span class="fc" id="L363">            String output = outContent.toString();</span>
+<span class="fc" id="L364">            assertTrue(output.contains(&quot;How many words in your message?:&quot;));</span>
+<span class="fc" id="L365">            assertTrue(output.contains(&quot;There were no words in the message.&quot;));</span>
+<span class="fc" id="L366">        } finally {</span>
+<span class="fc" id="L367">            System.setIn(originalIn);</span>
+<span class="fc" id="L368">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L370">    }</span>
+
+    /**
+     * Test wordEncryptionLoop with negative word count
+     */
+    @Test
+    public void testWordEncryptionLoopNegativeWords() throws Exception {
+<span class="fc" id="L377">        String input = &quot;-5\n&quot;;</span>
+<span class="fc" id="L378">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L379">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L381">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L382">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L384">        System.setIn(inContent);</span>
+<span class="fc" id="L385">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L388">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+<span class="fc" id="L389">            EncryptionMachine.wordEncryptionLoop(scanner);</span>
+
+<span class="fc" id="L391">            String output = outContent.toString();</span>
+<span class="fc" id="L392">            assertTrue(output.contains(&quot;How many words in your message?:&quot;));</span>
+<span class="fc" id="L393">            assertTrue(output.contains(&quot;There were no words in the message.&quot;));</span>
+<span class="fc" id="L394">        } finally {</span>
+<span class="fc" id="L395">            System.setIn(originalIn);</span>
+<span class="fc" id="L396">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L398">    }</span>
+
+    /**
+     * Test wordEncryptionLoop with invalid input (non-numeric)
+     */
+    @Test
+    public void testWordEncryptionLoopInvalidInput() throws Exception {
+<span class="fc" id="L405">        String input = &quot;abc\n&quot;;</span>
+<span class="fc" id="L406">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L407">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L409">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L410">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L412">        System.setIn(inContent);</span>
+<span class="fc" id="L413">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L416">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+<span class="fc" id="L417">            EncryptionMachine.wordEncryptionLoop(scanner);</span>
+
+<span class="fc" id="L419">            String output = outContent.toString();</span>
+<span class="fc" id="L420">            assertTrue(output.contains(&quot;How many words in your message?:&quot;));</span>
+<span class="fc" id="L421">            assertTrue(output.contains(&quot;A number was expected to be entered.&quot;));</span>
+<span class="fc" id="L422">        } finally {</span>
+<span class="fc" id="L423">            System.setIn(originalIn);</span>
+<span class="fc" id="L424">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L426">    }</span>
+
+    /**
+     * Test wordEncryptionLoop with exception thrown during word encryption
+     */
+    @Test
+    public void testWordEncryptionLoopWithInvalidWord() {
+        // Setup: 1 word, but the word contains invalid characters
+<span class="fc" id="L434">        String input = &quot;1\nHELLO\n&quot;;</span>
+<span class="fc" id="L435">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L436">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L438">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L439">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L441">        System.setIn(inContent);</span>
+<span class="fc" id="L442">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L445">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+
+            // This should throw an exception when trying to encrypt &quot;HELLO&quot;
+<span class="fc" id="L448">            assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L449">                EncryptionMachine.wordEncryptionLoop(scanner);</span>
+<span class="nc" id="L450">            });</span>
+<span class="fc" id="L451">        } finally {</span>
+<span class="fc" id="L452">            System.setIn(originalIn);</span>
+<span class="fc" id="L453">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L455">    }</span>
+
+    /**
+     * Test wordEncryptionLoop with single word - ensures all paths in loop are
+     * covered
+     */
+    @Test
+    public void testWordEncryptionLoopSingleWord() throws Exception {
+        // Setup: exactly 1 word
+<span class="fc" id="L464">        String input = &quot;1\ntest\n&quot;;</span>
+<span class="fc" id="L465">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L466">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L468">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L469">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L471">        System.setIn(inContent);</span>
+<span class="fc" id="L472">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L475">            java.util.Scanner scanner = new java.util.Scanner(System.in);</span>
+<span class="fc" id="L476">            EncryptionMachine.wordEncryptionLoop(scanner);</span>
+
+<span class="fc" id="L478">            String output = outContent.toString();</span>
+<span class="fc" id="L479">            assertTrue(output.contains(&quot;How many words in your message?:&quot;));</span>
+<span class="fc" id="L480">            assertTrue(output.contains(&quot;Next word:&quot;));</span>
+<span class="fc" id="L481">            assertTrue(output.contains(&quot;\&quot;test\&quot;&quot;));</span>
+<span class="fc" id="L482">            assertTrue(output.contains(&quot;\&quot;whvw\&quot;&quot;));</span>
+<span class="fc" id="L483">        } finally {</span>
+<span class="fc" id="L484">            System.setIn(originalIn);</span>
+<span class="fc" id="L485">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L487">    }</span>
+
+    // ============================================
+    // Test Group 6: Main Method Coverage
+    // ============================================
+
+    /**
+     * Test main method - full integration test
+     */
+    @Test
+    public void testMainMethod() {
+        // Simulate complete user interaction: key + 1 word
+<span class="fc" id="L499">        String input = &quot;test\n1\nhello\n&quot;;</span>
+<span class="fc" id="L500">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L501">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L503">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L504">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L506">        System.setIn(inContent);</span>
+<span class="fc" id="L507">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L510">            EncryptionMachine.main(new String[] {});</span>
+
+<span class="fc" id="L512">            String output = outContent.toString();</span>
+            // Verify start message
+<span class="fc" id="L514">            assertTrue(output.contains(&quot;Welcome to the CSCI717 Encryption Machine Construction&quot;));</span>
+            // Verify key encryption
+<span class="fc" id="L516">            assertTrue(output.contains(&quot;Enter a key:&quot;));</span>
+<span class="fc" id="L517">            assertTrue(output.contains(&quot;\&quot;test\&quot;&quot;));</span>
+<span class="fc" id="L518">            assertTrue(output.contains(&quot;\&quot;whvw\&quot;&quot;));</span>
+            // Verify word loop
+<span class="fc" id="L520">            assertTrue(output.contains(&quot;How many words in your message?:&quot;));</span>
+<span class="fc" id="L521">            assertTrue(output.contains(&quot;Next word:&quot;));</span>
+<span class="fc" id="L522">            assertTrue(output.contains(&quot;\&quot;hello\&quot;&quot;));</span>
+<span class="fc" id="L523">            assertTrue(output.contains(&quot;\&quot;khoor\&quot;&quot;));</span>
+            // Verify end message
+<span class="fc" id="L525">            assertTrue(output.contains(&quot;Message fully encrypted&quot;));</span>
+<span class="fc" id="L526">        } finally {</span>
+<span class="fc" id="L527">            System.setIn(originalIn);</span>
+<span class="fc" id="L528">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L530">    }</span>
+
+    /**
+     * Test main method with exception handling - invalid character in key
+     */
+    @Test
+    public void testMainMethodWithException() {
+        // Simulate user entering invalid key
+<span class="fc" id="L538">        String input = &quot;TEST\n&quot;;</span>
+<span class="fc" id="L539">        java.io.ByteArrayInputStream inContent = new java.io.ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L540">        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();</span>
+
+<span class="fc" id="L542">        java.io.InputStream originalIn = System.in;</span>
+<span class="fc" id="L543">        java.io.PrintStream originalOut = System.out;</span>
+
+<span class="fc" id="L545">        System.setIn(inContent);</span>
+<span class="fc" id="L546">        System.setOut(new java.io.PrintStream(outContent));</span>
+
+        try {
+<span class="fc" id="L549">            Exception exception = assertThrows(RuntimeException.class, () -&gt; {</span>
+<span class="nc" id="L550">                EncryptionMachine.main(new String[] {});</span>
+<span class="nc" id="L551">            });</span>
+
+            // Verify it's wrapping an IllegalArgumentException
+<span class="fc" id="L554">            assertTrue(exception.getCause() instanceof IllegalArgumentException);</span>
+<span class="fc" id="L555">        } finally {</span>
+<span class="fc" id="L556">            System.setIn(originalIn);</span>
+<span class="fc" id="L557">            System.setOut(originalOut);</span>
+        }
+<span class="fc" id="L559">    }</span>
+
+    // ============================================
+    // Test Group 3: Constant Modification (Hypothetical)
+    // ============================================
+    // Note: These tests cannot be directly implemented without modifying
+    // the SHIFT constant or refactoring the code to accept shift as a parameter.
+    // They are documented here for completeness but would require code changes
+    // to make SHIFT configurable for testing purposes.
+
+    /*
+     * BBT-3.1: Shift = 1 (Standard, no wrap)
+     * With SHIFT = 1: a -&gt; b, play -&gt; qmbz
+     * 
+     * BBT-3.2: Shift = 1 (Wrap-around)
+     * With SHIFT = 1: z -&gt; a, zebra -&gt; afcsb
+     * 
+     * BBT-3.3: Shift = 25 (Reverse Shift)
+     * With SHIFT = 25: a -&gt; z, zulu -&gt; yult
+     * 
+     * To implement these tests, consider refactoring encryptLetter and encryptWord
+     * to accept a shift parameter, or create separate methods for testing purposes.
+     */
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>EncryptionMachineTest (Nov 29, 2025 5:29:29 PM)</div></body></html>
